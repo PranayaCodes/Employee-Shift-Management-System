@@ -18,3 +18,19 @@ tk.Button(root, text="Login").pack()
 tk.Button(root, text="Signup").pack()
 
 root.mainloop()
+
+
+
+import tkinter as tk
+
+# Tkinter UI setup for deleting shifts
+root = tk.Tk()
+root.title("Delete Shift")
+
+tk.Label(root, text="Shift ID").pack()
+entry_id = tk.Entry(root)
+entry_id.pack()
+
+tk.Button(root, text="Delete Shift").pack()
+
+root.mainloop()
