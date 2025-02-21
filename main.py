@@ -107,3 +107,32 @@ entry_id.pack()
 tk.Button(root, text="Delete Shift").pack()
 
 root.mainloop()
+
+
+
+def delete_shift():
+    shift_id = entry_id.get()
+    messagebox.showinfo("Success", f"Shift {shift_id} deleted.")
+
+tk.Button(root, text="Delete Shift", command=delete_shift).pack()
+
+
+
+import sqlite3
+
+conn = sqlite3.connect("shifts.db")
+cursor = conn.cursor()
+
+def delete_shift():
+    shift_id = entry_id.get()
+    cursor.execute("DELETE FROM shifts WHERE id = ?", (shift_id,))
+    conn.commit()
+    messagebox.showinfo("Success", f"Shift {shift_id} deleted.")
+
+tk.Button(root, text="Delete Shift", command=delete_shift).pack()
+
+
+
+tk.Label(root, text="Enter Shift ID to Delete").pack()
+tk.Button(root, text="Delete Shift", command=delete_shift).pack()
+
