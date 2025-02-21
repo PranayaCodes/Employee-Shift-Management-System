@@ -29,7 +29,7 @@ init_db()
 
 # Main App Class
 class ShiftManagementApp:
-    def _init_(self, root):
+    def __init__(self, root):
         self.root = root
         self.root.title("Shift Management System")
         self.root.geometry("500x400")
@@ -84,10 +84,9 @@ class ShiftManagementApp:
             messagebox.showinfo("Success", "Account created successfully!")
         except sqlite3.IntegrityError:
             messagebox.showerror("Error", "Username already exists")
-            conn.close()
+        conn.close()
 
-
-             # Main Page
+    # Main Page
     def create_main_page(self):
         for widget in self.root.winfo_children():
             widget.destroy()
@@ -143,10 +142,8 @@ class ShiftManagementApp:
             update_window.destroy()
         
         tk.Button(update_window, text="Update", command=update).pack()
-
-
-
-         # Pranaya - Delete Shift
+    
+    # Pranaya - Delete Shift
     def delete_shift(self):
         delete_window = tk.Toplevel(self.root)
         delete_window.title("Delete Shift")
@@ -165,9 +162,8 @@ class ShiftManagementApp:
         
         tk.Button(delete_window, text="Delete", command=delete).pack()
 
-
 # Run App
 if __name__ == "__main__":
     root = tk.Tk()
     app = ShiftManagementApp(root)
-    root.mainloop() 
+    root.mainloop()
