@@ -112,6 +112,32 @@ tk.Button(root, text="Update Shift").pack()
 
 root.mainloop()
 
+def update_shift():
+    shift_id = entry_id.get()
+    new_time = entry_shift.get()
+    messagebox.showinfo("Success", f"Shift {shift_id} updated to {new_time}.")
+
+tk.Button(root, text="Update Shift", command=update_shift).pack()
+
+
+import sqlite3
+
+conn = sqlite3.connect("shifts.db")
+cursor = conn.cursor()
+
+def update_shift():
+    shift_id = entry_id.get()
+    new_time = entry_shift.get()
+    cursor.execute("UPDATE shifts SET shift_time = ? WHERE id = ?", (new_time, shift_id))
+    conn.commit()
+    messagebox.showinfo("Success", f"Shift {shift_id} updated to {new_time}.")
+
+tk.Button(root, text="Update Shift", command=update_shift).pack()
+
+tk.Label(root, text="Enter Shift ID and New Time").pack()
+tk.Button(root, text="Update Shift", command=update_shift).pack()
+
+
 
 
 import tkinter as tk
