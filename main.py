@@ -20,6 +20,7 @@ tk.Button(root, text="Signup").pack()
 root.mainloop()
 
 
+<<<<<<< HEAD
 def signup():
     username = entry_user.get()
     password = entry_pass.get()
@@ -42,6 +43,60 @@ tk.Button(root, text="Login", command=login).pack()
 tk.Label(root, text="Please Login or Signup").pack()
 tk.Button(root, text="Login", command=login).pack()
 tk.Button(root, text="Signup", command=signup).pack()
+=======
+
+import tkinter as tk
+
+# Tkinter UI setup for adding shifts
+root = tk.Tk()
+root.title("Add Shift")
+
+tk.Label(root, text="Employee Name").pack()
+entry_employee = tk.Entry(root)
+entry_employee.pack()
+
+tk.Label(root, text="Shift Time").pack()
+entry_shift = tk.Entry(root)
+entry_shift.pack()
+
+tk.Button(root, text="Add Shift").pack()
+
+root.mainloop()
+
+
+
+def add_shift():
+    employee = entry_employee.get()
+    shift_time = entry_shift.get()
+    messagebox.showinfo("Success", f"Shift for {employee} at {shift_time} added.")
+
+tk.Button(root, text="Add Shift", command=add_shift).pack()
+
+
+import sqlite3
+
+conn = sqlite3.connect("shifts.db")
+cursor = conn.cursor()
+
+cursor.execute('''CREATE TABLE IF NOT EXISTS shifts (id INTEGER PRIMARY KEY, employee TEXT, shift_time TEXT)''')
+conn.commit()
+
+def add_shift():
+    employee = entry_employee.get()
+    shift_time = entry_shift.get()
+    cursor.execute("INSERT INTO shifts (employee, shift_time) VALUES (?, ?)", (employee, shift_time))
+    conn.commit()
+    messagebox.showinfo("Success", f"Shift for {employee} at {shift_time} added.")
+
+tk.Button(root, text="Add Shift", command=add_shift).pack()
+
+
+tk.Label(root, text="Enter Shift Details").pack()
+tk.Button(root, text="Add Shift", command=add_shift).pack()
+
+
+
+>>>>>>> 39bc0a78a0849ad60c5a779e6e4f68be1e80f507
 
 
 import tkinter as tk
@@ -77,3 +132,32 @@ entry_id.pack()
 tk.Button(root, text="Delete Shift").pack()
 
 root.mainloop()
+
+
+
+def delete_shift():
+    shift_id = entry_id.get()
+    messagebox.showinfo("Success", f"Shift {shift_id} deleted.")
+
+tk.Button(root, text="Delete Shift", command=delete_shift).pack()
+
+
+
+import sqlite3
+
+conn = sqlite3.connect("shifts.db")
+cursor = conn.cursor()
+
+def delete_shift():
+    shift_id = entry_id.get()
+    cursor.execute("DELETE FROM shifts WHERE id = ?", (shift_id,))
+    conn.commit()
+    messagebox.showinfo("Success", f"Shift {shift_id} deleted.")
+
+tk.Button(root, text="Delete Shift", command=delete_shift).pack()
+
+
+
+tk.Label(root, text="Enter Shift ID to Delete").pack()
+tk.Button(root, text="Delete Shift", command=delete_shift).pack()
+
