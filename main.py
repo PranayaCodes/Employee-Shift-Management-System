@@ -122,4 +122,24 @@ class ShiftManagementApp:
         
         tk.Button(add_window, text="Save", command=save_shift).pack()
     
-    
+    # Nirajan - Update Shift
+    def update_shift(self):
+        update_window = tk.Toplevel(self.root)
+        update_window.title("Update Shift")
+        tk.Label(update_window, text="Shift ID to Update:").pack()
+        id_entry = tk.Entry(update_window)
+        id_entry.pack()
+        tk.Label(update_window, text="New Shift Time:").pack()
+        new_shift_entry = tk.Entry(update_window)
+        new_shift_entry.pack()
+        
+        def update():
+            conn = sqlite3.connect("shifts.db")
+            cursor = conn.cursor()
+            cursor.execute("UPDATE shifts SET shift_time=? WHERE id=?", (new_shift_entry.get(), id_entry.get()))
+            conn.commit()
+            conn.close()
+            messagebox.showinfo("Success", "Shift updated successfully!")
+            update_window.destroy()
+        
+        tk.Button(update_window, text="Update", command=update).pack()
