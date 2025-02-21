@@ -143,3 +143,24 @@ class ShiftManagementApp:
             update_window.destroy()
         
         tk.Button(update_window, text="Update", command=update).pack()
+
+
+
+         # Pranaya - Delete Shift
+    def delete_shift(self):
+        delete_window = tk.Toplevel(self.root)
+        delete_window.title("Delete Shift")
+        tk.Label(delete_window, text="Shift ID to Delete:").pack()
+        id_entry = tk.Entry(delete_window)
+        id_entry.pack()
+        
+        def delete():
+            conn = sqlite3.connect("shifts.db")
+            cursor = conn.cursor()
+            cursor.execute("DELETE FROM shifts WHERE id=?", (id_entry.get(),))
+            conn.commit()
+            conn.close()
+            messagebox.showinfo("Success", "Shift deleted successfully!")
+            delete_window.destroy()
+        
+        tk.Button(delete_window, text="Delete", command=delete).pack()
