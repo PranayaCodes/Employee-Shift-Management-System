@@ -20,30 +20,6 @@ tk.Button(root, text="Signup").pack()
 root.mainloop()
 
 
-def signup():
-    username = entry_user.get()
-    password = entry_pass.get()
-    messagebox.showinfo("Success", "Signup successful!")
-    
-tk.Button(root, text="Signup", command=signup).pack()
-
-
-def login():
-    username = entry_user.get()
-    password = entry_pass.get()
-    if username and password:
-        messagebox.showinfo("Success", "Login successful!")
-    else:
-        messagebox.showerror("Error", "Please fill in both fields")
-
-tk.Button(root, text="Login", command=login).pack()
-
-
-tk.Label(root, text="Please Login or Signup").pack()
-tk.Button(root, text="Login", command=login).pack()
-tk.Button(root, text="Signup", command=signup).pack()
-
-
 import tkinter as tk
 
 # Tkinter UI setup for updating shifts
