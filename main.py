@@ -20,7 +20,6 @@ tk.Button(root, text="Signup").pack()
 root.mainloop()
 
 
-<<<<<<< HEAD
 def signup():
     username = entry_user.get()
     password = entry_pass.get()
@@ -43,7 +42,7 @@ tk.Button(root, text="Login", command=login).pack()
 tk.Label(root, text="Please Login or Signup").pack()
 tk.Button(root, text="Login", command=login).pack()
 tk.Button(root, text="Signup", command=signup).pack()
-=======
+
 
 import tkinter as tk
 
@@ -93,10 +92,6 @@ tk.Button(root, text="Add Shift", command=add_shift).pack()
 
 tk.Label(root, text="Enter Shift Details").pack()
 tk.Button(root, text="Add Shift", command=add_shift).pack()
-
-
-
->>>>>>> 39bc0a78a0849ad60c5a779e6e4f68be1e80f507
 
 
 import tkinter as tk
