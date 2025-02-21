@@ -20,6 +20,25 @@ tk.Button(root, text="Signup").pack()
 root.mainloop()
 
 
+import tkinter as tk
+
+# Tkinter UI setup for updating shifts
+root = tk.Tk()
+root.title("Update Shift")
+
+tk.Label(root, text="Shift ID").pack()
+entry_id = tk.Entry(root)
+entry_id.pack()
+
+tk.Label(root, text="New Shift Time").pack()
+entry_shift = tk.Entry(root)
+entry_shift.pack()
+
+tk.Button(root, text="Update Shift").pack()
+
+root.mainloop()
+
+
 
 import tkinter as tk
 
