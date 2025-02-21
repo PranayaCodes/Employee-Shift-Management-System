@@ -85,3 +85,41 @@ class ShiftManagementApp:
         except sqlite3.IntegrityError:
             messagebox.showerror("Error", "Username already exists")
             conn.close()
+
+
+             # Main Page
+    def create_main_page(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
+        
+        tk.Label(self.root, text=f"Welcome {self.current_user} ({self.role})").pack()
+        if self.role == "manager":
+            tk.Button(self.root, text="Add Shift", command=self.add_shift).pack()
+            tk.Button(self.root, text="Update Shift", command=self.update_shift).pack()
+            tk.Button(self.root, text="Delete Shift", command=self.delete_shift).pack()
+        tk.Button(self.root, text="Logout", command=self.create_login_page).pack()
+    
+    # Bibek - Add Shift
+    def add_shift(self):
+        add_window = tk.Toplevel(self.root)
+        add_window.title("Add Shift")
+        tk.Label(add_window, text="Employee Name:").pack()
+        emp_entry = tk.Entry(add_window)
+        emp_entry.pack()
+        tk.Label(add_window, text="Shift Time:").pack()
+        shift_entry = tk.Entry(add_window)
+        shift_entry.pack()
+        
+        def save_shift():
+            conn = sqlite3.connect("shifts.db")
+            cursor = conn.cursor()
+            cursor.execute("INSERT INTO shifts (employee, shift_time, manager) VALUES (?, ?, ?)",
+                           (emp_entry.get(), shift_entry.get(), self.current_user))
+            conn.commit()
+            conn.close()
+            messagebox.showinfo("Success", "Shift added successfully!")
+            add_window.destroy()
+        
+        tk.Button(add_window, text="Save", command=save_shift).pack()
+    
+    
