@@ -164,3 +164,10 @@ class ShiftManagementApp:
             delete_window.destroy()
         
         tk.Button(delete_window, text="Delete", command=delete).pack()
+
+
+# Run App
+if __name__ == "__main__":
+    root = tk.Tk()
+    app = ShiftManagementApp(root)
+    root.mainloop() 
