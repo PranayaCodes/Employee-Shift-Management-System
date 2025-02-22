@@ -1,169 +1,188 @@
+import sqlite3
 import tkinter as tk
 from tkinter import messagebox, ttk
-import sqlite3
 
 # Database Setup
-def init_db():
+def setup_database():
     conn = sqlite3.connect("shifts.db")
     cursor = conn.cursor()
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE,
-            password TEXT,
-            role TEXT
+            username TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            role TEXT NOT NULL
         )
     """)
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS shifts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            employee TEXT,
-            shift_time TEXT,
-            manager TEXT
+            employee_name TEXT NOT NULL,
+            shift_date TEXT NOT NULL,
+            shift_time TEXT NOT NULL
         )
     """)
     conn.commit()
     conn.close()
 
-init_db()
-
-# Main App Class
-class ShiftManagementApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Shift Management System")
-        self.root.geometry("500x400")
-        self.current_user = None
-        self.create_login_page()
+# User Registration
+def register():
+    username = entry_username.get()
+    password = entry_password.get()
+    role = role_var.get()
     
-    # Aaryaman - User Login & Signup
-    def create_login_page(self):
-        for widget in self.root.winfo_children():
-            widget.destroy()
-        
-        tk.Label(self.root, text="Username:").pack()
-        self.username_entry = tk.Entry(self.root)
-        self.username_entry.pack()
-        
-        tk.Label(self.root, text="Password:").pack()
-        self.password_entry = tk.Entry(self.root, show="*")
-        self.password_entry.pack()
-        
-        self.role_var = tk.StringVar(value="employee")
-        tk.Radiobutton(self.root, text="Employee", variable=self.role_var, value="employee").pack()
-        tk.Radiobutton(self.root, text="Manager", variable=self.role_var, value="manager").pack()
-        
-        tk.Button(self.root, text="Login", command=self.login).pack()
-        tk.Button(self.root, text="Signup", command=self.signup).pack()
-    
-    def login(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        conn = sqlite3.connect("shifts.db")
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM users WHERE username=? AND password=?", (username, password))
-        user = cursor.fetchone()
-        conn.close()
-        
-        if user:
-            self.current_user = user[1]
-            self.role = user[3]
-            self.create_main_page()
-        else:
-            messagebox.showerror("Error", "Invalid username or password")
-    
-    def signup(self):
-        username = self.username_entry.get()
-        password = self.password_entry.get()
-        role = self.role_var.get()
+    if username and password:
         conn = sqlite3.connect("shifts.db")
         cursor = conn.cursor()
         try:
             cursor.execute("INSERT INTO users (username, password, role) VALUES (?, ?, ?)", (username, password, role))
             conn.commit()
-            messagebox.showinfo("Success", "Account created successfully!")
+            messagebox.showinfo("Success", "User registered successfully!")
         except sqlite3.IntegrityError:
             messagebox.showerror("Error", "Username already exists")
         conn.close()
+    else:
+        messagebox.showerror("Error", "All fields are required")
 
-    # Main Page
-    def create_main_page(self):
-        for widget in self.root.winfo_children():
-            widget.destroy()
-        
-        tk.Label(self.root, text=f"Welcome {self.current_user} ({self.role})").pack()
-        if self.role == "manager":
-            tk.Button(self.root, text="Add Shift", command=self.add_shift).pack()
-            tk.Button(self.root, text="Update Shift", command=self.update_shift).pack()
-            tk.Button(self.root, text="Delete Shift", command=self.delete_shift).pack()
-        tk.Button(self.root, text="Logout", command=self.create_login_page).pack()
+# Login Function
+def login():
+    username = entry_username.get()
+    password = entry_password.get()
     
-    # Bibek - Add Shift
-    def add_shift(self):
-        add_window = tk.Toplevel(self.root)
-        add_window.title("Add Shift")
-        tk.Label(add_window, text="Employee Name:").pack()
-        emp_entry = tk.Entry(add_window)
-        emp_entry.pack()
-        tk.Label(add_window, text="Shift Time:").pack()
-        shift_entry = tk.Entry(add_window)
-        shift_entry.pack()
-        
-        def save_shift():
-            conn = sqlite3.connect("shifts.db")
-            cursor = conn.cursor()
-            cursor.execute("INSERT INTO shifts (employee, shift_time, manager) VALUES (?, ?, ?)",
-                           (emp_entry.get(), shift_entry.get(), self.current_user))
-            conn.commit()
-            conn.close()
-            messagebox.showinfo("Success", "Shift added successfully!")
-            add_window.destroy()
-        
-        tk.Button(add_window, text="Save", command=save_shift).pack()
+    conn = sqlite3.connect("shifts.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT role FROM users WHERE username=? AND password=?", (username, password))
+    user = cursor.fetchone()
+    conn.close()
     
-    # Nirajan - Update Shift
-    def update_shift(self):
-        update_window = tk.Toplevel(self.root)
-        update_window.title("Update Shift")
-        tk.Label(update_window, text="Shift ID to Update:").pack()
-        id_entry = tk.Entry(update_window)
-        id_entry.pack()
-        tk.Label(update_window, text="New Shift Time:").pack()
-        new_shift_entry = tk.Entry(update_window)
-        new_shift_entry.pack()
-        
-        def update():
-            conn = sqlite3.connect("shifts.db")
-            cursor = conn.cursor()
-            cursor.execute("UPDATE shifts SET shift_time=? WHERE id=?", (new_shift_entry.get(), id_entry.get()))
-            conn.commit()
-            conn.close()
-            messagebox.showinfo("Success", "Shift updated successfully!")
-            update_window.destroy()
-        
-        tk.Button(update_window, text="Update", command=update).pack()
-    
-    # Pranaya - Delete Shift
-    def delete_shift(self):
-        delete_window = tk.Toplevel(self.root)
-        delete_window.title("Delete Shift")
-        tk.Label(delete_window, text="Shift ID to Delete:").pack()
-        id_entry = tk.Entry(delete_window)
-        id_entry.pack()
-        
-        def delete():
-            conn = sqlite3.connect("shifts.db")
-            cursor = conn.cursor()
-            cursor.execute("DELETE FROM shifts WHERE id=?", (id_entry.get(),))
-            conn.commit()
-            conn.close()
-            messagebox.showinfo("Success", "Shift deleted successfully!")
-            delete_window.destroy()
-        
-        tk.Button(delete_window, text="Delete", command=delete).pack()
+    if user:
+        login_window.destroy()
+        open_main_window(user[0])
+    else:
+        messagebox.showerror("Error", "Invalid username or password")
 
-# Run App
-if __name__ == "__main__":
+# Functions for Manager
+def add_shift():
+    employee = entry_employee.get()
+    date = entry_date.get()
+    time = entry_time.get()
+    if employee and date and time:
+        conn = sqlite3.connect("shifts.db")
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO shifts (employee_name, shift_date, shift_time) VALUES (?, ?, ?)", (employee, date, time))
+        conn.commit()
+        conn.close()
+        view_shifts()
+    else:
+        messagebox.showerror("Error", "All fields are required")
+
+def view_shifts():
+    for row in shift_tree.get_children():
+        shift_tree.delete(row)
+    conn = sqlite3.connect("shifts.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM shifts")
+    for row in cursor.fetchall():
+        shift_tree.insert("", "end", values=row)
+    conn.close()
+
+def delete_shift():
+    selected_item = shift_tree.selection()
+    if selected_item:
+        shift_id = shift_tree.item(selected_item)['values'][0]
+        conn = sqlite3.connect("shifts.db")
+        cursor = conn.cursor()
+        cursor.execute("DELETE FROM shifts WHERE id=?", (shift_id,))
+        conn.commit()
+        conn.close()
+        view_shifts()
+    else:
+        messagebox.showerror("Error", "Select a shift to delete")
+
+def update_shift():
+    selected_item = shift_tree.selection()
+    if selected_item:
+        shift_id = shift_tree.item(selected_item)['values'][0]
+        employee = entry_employee.get()
+        date = entry_date.get()
+        time = entry_time.get()
+        if employee and date and time:
+            conn = sqlite3.connect("shifts.db")
+            cursor = conn.cursor()
+            cursor.execute("UPDATE shifts SET employee_name=?, shift_date=?, shift_time=? WHERE id=?", (employee, date, time, shift_id))
+            conn.commit()
+            conn.close()
+            view_shifts()
+        else:
+            messagebox.showerror("Error", "All fields are required")
+    else:
+        messagebox.showerror("Error", "Select a shift to update")
+
+def logout():
+    root.destroy()
+    open_login_window()
+
+def open_main_window(role):
+    global root, entry_employee, entry_date, entry_time, shift_tree
+    
     root = tk.Tk()
-    app = ShiftManagementApp(root)
+    root.title("Employee Shift Management")
+    root.geometry("600x400")
+    
+    if role == "Manager":
+        frame = tk.Frame(root)
+        frame.pack(pady=10)
+        
+        tk.Label(frame, text="Employee Name").grid(row=0, column=0)
+        tk.Label(frame, text="Shift Date").grid(row=1, column=0)
+        tk.Label(frame, text="Shift Time").grid(row=2, column=0)
+        
+        entry_employee = tk.Entry(frame)
+        entry_employee.grid(row=0, column=1)
+        entry_date = tk.Entry(frame)
+        entry_date.grid(row=1, column=1)
+        entry_time = tk.Entry(frame)
+        entry_time.grid(row=2, column=1)
+        
+        tk.Button(frame, text="Add Shift", command=add_shift).grid(row=3, column=0, columnspan=2)
+        tk.Button(frame, text="Update Shift", command=update_shift).grid(row=4, column=0, columnspan=2)
+        tk.Button(frame, text="Delete Shift", command=delete_shift).grid(row=5, column=0, columnspan=2)
+    
+    tk.Button(root, text="Logout", command=logout).pack()
+    
+    shift_tree = ttk.Treeview(root, columns=("ID", "Employee", "Date", "Time"), show="headings")
+    shift_tree.heading("ID", text="ID")
+    shift_tree.heading("Employee", text="Employee")
+    shift_tree.heading("Date", text="Date")
+    shift_tree.heading("Time", text="Time")
+    shift_tree.pack(pady=10)
+    
+    view_shifts()
     root.mainloop()
+
+def open_login_window():
+    global login_window, role_var, entry_username, entry_password
+    login_window = tk.Tk()
+    login_window.title("Login / Signup")
+    login_window.geometry("300x300")
+    
+    tk.Label(login_window, text="Select Role:").pack(pady=10)
+    role_var = tk.StringVar(value="Employee")
+    tk.Radiobutton(login_window, text="Manager", variable=role_var, value="Manager").pack()
+    tk.Radiobutton(login_window, text="Employee", variable=role_var, value="Employee").pack()
+    
+    tk.Label(login_window, text="Username:").pack()
+    entry_username = tk.Entry(login_window)
+    entry_username.pack()
+    
+    tk.Label(login_window, text="Password:").pack()
+    entry_password = tk.Entry(login_window, show="*")
+    entry_password.pack()
+    
+    tk.Button(login_window, text="Login", command=login).pack(pady=5)
+    tk.Button(login_window, text="Signup", command=register).pack(pady=5)
+    
+    login_window.mainloop()
+
+setup_database()
+open_login_window()
