@@ -338,16 +338,16 @@ def open_login_window():
     
     # Main container frame with two columns
     container = tk.Frame(login_window, bg=AppStyles.BG_COLOR)
-    container.pack(fill="both", expand=True, padx=20, pady=20)
+    container.pack(fill="both", expand=True, padx=0, pady=20)
     
     # Left Frame for Image using Pillow
     left_frame = tk.Frame(container, bg=AppStyles.BG_COLOR)
     left_frame.grid(row=0, column=0, sticky="nsew", padx=(0,20), pady=150)
-    image_path = "/Applications/XAMPP/xamppfiles/htdocs/add/Software_proj/Shift_Manager/Image_folder/image.png"
+    image_path = "C:\CODE\Shift Management System\Shift_Manager\Image_folder\image.png"
     if os.path.exists(image_path):
         pil_image = Image.open(image_path)
         # Resize using the new resampling attribute
-        pil_image = pil_image.resize((400, 400), Image.Resampling.LANCZOS)
+        pil_image = pil_image.resize((700, 600), Image.Resampling.LANCZOS)
         img = ImageTk.PhotoImage(pil_image)
         img_label = tk.Label(left_frame, image=img, bg=AppStyles.BG_COLOR)
         img_label.image = img  # keep a reference
@@ -360,7 +360,7 @@ def open_login_window():
     right_frame.grid(row=0, column=1, sticky="nsew")
     
     # Spacer to push the login form lower
-    tk.Label(right_frame, text="", bg=AppStyles.BG_COLOR).pack(pady=50)
+    tk.Label(right_frame, text="", bg=AppStyles.BG_COLOR).pack(pady=100)
     
     tk.Label(right_frame, text="Shift Management System", 
              bg=AppStyles.BG_COLOR, fg=AppStyles.PRIMARY_COLOR, font=AppStyles.TITLE_FONT).pack(pady=20)
