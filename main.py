@@ -1,6 +1,8 @@
 import sqlite3
 import tkinter as tk
 from tkinter import ttk, messagebox
+from PIL import Image, ImageTk
+import os
 
 # Database Setup
 def setup_database():
@@ -56,7 +58,7 @@ def create_button(parent, text, command, bg_color=AppStyles.SECONDARY_COLOR):
                     bg=bg_color, fg="white", font=AppStyles.FONT,
                     relief="flat", padx=10, pady=5)
 
-# Manager Approval System (unchanged)
+# Manager Approval System
 def show_manager_requests():
     def approve_request():
         selected = tree.selection()
@@ -123,7 +125,7 @@ def show_manager_requests():
     
     update_request_list()
 
-# Registration Function (unchanged)
+# Registration Function
 def register():
     username = entry_username.get()
     password = entry_password.get()
@@ -157,7 +159,7 @@ def register():
     finally:
         conn.close()
 
-# Login Function (unchanged)
+# Login Function
 def login():
     username = entry_username.get()
     password = entry_password.get()
@@ -338,15 +340,19 @@ def open_login_window():
     container = tk.Frame(login_window, bg=AppStyles.BG_COLOR)
     container.pack(fill="both", expand=True, padx=20, pady=20)
     
-    # Left Frame for Image
+    # Left Frame for Image using Pillow
     left_frame = tk.Frame(container, bg=AppStyles.BG_COLOR)
-    left_frame.grid(row=0, column=0, sticky="nsew", padx=(0,20))
-    try:
-        image = tk.PhotoImage(file="ui_image.png")  # Replace with your image file
-        img_label = tk.Label(left_frame, image=image, bg=AppStyles.BG_COLOR)
-        img_label.image = image  # keep a reference
+    left_frame.grid(row=0, column=0, sticky="nsew", padx=(0,20), pady=150)
+    image_path = "/Applications/XAMPP/xamppfiles/htdocs/add/Software_proj/Shift_Manager/Image_folder/image.png"
+    if os.path.exists(image_path):
+        pil_image = Image.open(image_path)
+        # Resize using the new resampling attribute
+        pil_image = pil_image.resize((400, 400), Image.Resampling.LANCZOS)
+        img = ImageTk.PhotoImage(pil_image)
+        img_label = tk.Label(left_frame, image=img, bg=AppStyles.BG_COLOR)
+        img_label.image = img  # keep a reference
         img_label.pack(expand=True)
-    except Exception as e:
+    else:
         tk.Label(left_frame, text="[Image Not Available]", bg=AppStyles.BG_COLOR, font=AppStyles.FONT).pack(expand=True)
     
     # Right Frame for Login Form
