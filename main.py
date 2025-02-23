@@ -343,7 +343,7 @@ def open_login_window():
     # Left Frame for Image using Pillow
     left_frame = tk.Frame(container, bg=AppStyles.BG_COLOR)
     left_frame.grid(row=0, column=0, sticky="nsew", padx=(0,20), pady=150)
-    image_path = "C:\CODE\Shift Management System\Shift_Manager\Image_folder\image.png"
+    image_path = "Shift_Manager\Image_folder\image.png"
     if os.path.exists(image_path):
         pil_image = Image.open(image_path)
         # Resize using the new resampling attribute
